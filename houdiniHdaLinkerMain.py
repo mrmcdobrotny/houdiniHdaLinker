@@ -22,6 +22,8 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
 
     def closeEvent(self, event):
         self.setParent(None)
+        self.close()
+        
 
     def initTable(self):
         self.model = QtGui.QStandardItemModel(self)
@@ -129,15 +131,20 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
                                 print(new_link)
                                 rm = os.popen("rm {}".format(new_link))
                                 rm.close()
-        
-if __name__ == 'houdiniHdaLinkerMain':
-    
-    mainWin = hdaLinker()
-    mainWin.setParent(hou.qt.mainWindow(), QtCore.Qt.Window)
-    mainWin.show()
+
+def main():
+    if __name__ == 'houdiniHdaLinkerMain':
+        #print(__name__)
+        #app = QtWidgets.QApplication()
+        mainWin = hdaLinker()
+        mainWin.setParent(hou.qt.mainWindow(), QtCore.Qt.Window)
+        #mainWin.setParent(None)
+        mainWin.show()
+        #ret = app.exec_()
+        #sys.exit( ret )    
 
 if __name__ == '__main__':
-    
+    #print(__name__)
     app = QtWidgets.QApplication(sys.argv)
     mainWin = hdaLinker()
     mainWin.show()
