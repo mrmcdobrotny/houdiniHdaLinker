@@ -1,20 +1,26 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'uiHoudiniHdaLinkeroSuxYs.ui'
+## Form generated from reading UI file 'uiHoudiniHdaLinkeriFgKZz.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
-
-from PySide2.QtCore import (QCoreApplication, QDate, QDateTime, QMetaObject,
-    QObject, QPoint, QRect, QSize, QTime, QUrl, Qt)
-from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
-    QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter,
-    QPixmap, QRadialGradient)
-from PySide2.QtWidgets import *
-
+try:
+    from PySide2.QtCore import (QCoreApplication, QDate, QDateTime, QMetaObject,
+        QObject, QPoint, QRect, QSize, QTime, QUrl, Qt)
+    from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
+        QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter,
+        QPixmap, QRadialGradient)
+    from PySide2.QtWidgets import *
+except:
+    from Qt.QtCore import (QCoreApplication, QDate, QDateTime, QMetaObject,
+        QObject, QPoint, QRect, QSize, QTime, QUrl, Qt)
+    from Qt.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
+        QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter,
+        QPixmap, QRadialGradient)
+    from Qt.QtWidgets import *
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -102,6 +108,15 @@ class Ui_Form(object):
 
         self.gridLayout_2.addLayout(self.verticalLayout, 0, 2, 1, 1)
 
+        self.pushDelete = QPushButton(Form)
+        self.pushDelete.setObjectName(u"pushDelete")
+        self.pushDelete.setMaximumSize(QSize(500, 100))
+        font = QFont()
+        font.setPointSize(9)
+        self.pushDelete.setFont(font)
+
+        self.gridLayout_2.addWidget(self.pushDelete, 7, 0, 1, 1)
+
 
         self.retranslateUi(Form)
 
@@ -116,5 +131,6 @@ class Ui_Form(object):
         self.pushRemoveLinks.setText(QCoreApplication.translate("Form", u"Remove Links", None))
         self.pushCreateLinks.setText(QCoreApplication.translate("Form", u"Create Links", None))
         self.label.setText(QCoreApplication.translate("Form", u"Filter", None))
+        self.pushDelete.setText(QCoreApplication.translate("Form", u"Delete Assets", None))
     # retranslateUi
 

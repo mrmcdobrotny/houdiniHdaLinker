@@ -155,6 +155,24 @@
      </item>
     </layout>
    </item>
+   <item row="7" column="0">
+    <widget class="QPushButton" name="pushDelete">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Delete Assets</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
