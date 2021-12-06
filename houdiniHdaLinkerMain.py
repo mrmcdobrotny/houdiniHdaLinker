@@ -31,7 +31,19 @@ class areYouSure(QtWidgets.QDialog, Ui_Dialog):
             if os.path.exists(path):
                 print("{} is going to be removed".format(name))
 
+class Model(QtGui.QStandardItemModel):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.currentText = "default"
 
+    def setData(self, index, value, role=QtCore.Qt.EditRole):
+        if index.isValid() and role == QtCore.Qt.EditRole:
+            self.currentText = value
+            self.dataChanged.emit(index, index)
+            
+            return True
+        else:
+            return False
 
 class hdaLinker(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
@@ -49,12 +61,15 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
         self.initTable()
         self.tableView.setColumnHidden(1, True)
 
+        self.model.dataChanged.connect(self.commentSelected)
+
         self.lineEditFilter.textChanged.connect(self.filterTable)
         self.pushCheck.clicked.connect(self.checkSelected)
         self.pushUncheck.clicked.connect(self.uncheckSelected)
         self.pushCreateLinks.clicked.connect(self.createLinks)
         self.pushRemoveLinks.clicked.connect(self.removeLinks)
         self.pushDelete.clicked.connect(self.deleteHda)
+
 
     def closeEvent(self, event):
         self.setParent(None)
@@ -118,8 +133,20 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
         #dialog.show()
         dialog.exec_()
 
+    def commentSelected(self): ##########################################################
+        selectionModel = self.tableView.selectionModel()
+        selected = selectionModel.selectedIndexes()
+        for index in selected:
+            srcIndex = self.proxy.mapToSource(index)
+            if srcIndex.column() == 2:
+                item = self.model.itemFromIndex(srcIndex)
+                item.setText(self.model.currentText)
+                #print(item.row(), self.model.currentText)
+                #self.model.itemFromIndex(srcIndex).setCheckState(QtCore.Qt.CheckState.Checked)
+
     def initTable(self):
-        self.model = QtGui.QStandardItemModel(self)
+        #self.model = QtGui.QStandardItemModel(self)
+        self.model = Model()
         root = "/media/white/tools/otls"
         self.files_paths = glob.glob(os.path.join(root, "*.hda"))
         self.files_names = [os.path.split(filepath)[1] for filepath in self.files_paths]
@@ -153,9 +180,14 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
                     item.setEditable(False)
                     rowItems.append(item)
                 elif column == 2:
-                    comment = QtGui.QStandardItem("{}".format(self.comments["__comments"][file]))
-                    comment.setEditable(True)
-                    rowItems.append(comment)
+                    try:
+                        comment = QtGui.QStandardItem("{}".format(self.comments["__comments"][file]))
+                        comment.setEditable(True)
+                        rowItems.append(comment)
+                    except KeyError:
+                        comment = QtGui.QStandardItem("")
+                        comment.setEditable(True)
+                        rowItems.append(comment)
                 else:
                     item = QtGui.QStandardItem("{}".format(label))
                     item.setCheckable(True)
