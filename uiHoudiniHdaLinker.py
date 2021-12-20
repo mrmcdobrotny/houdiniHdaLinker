@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'uiHoudiniHdaLinkeriFgKZz.ui'
+## Form generated from reading UI file 'uiHoudiniHdaLinkerBXxOHD.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.0
 ##
@@ -102,6 +102,11 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.lineEditFilter)
 
+        self.checkBoxFilterChecked = QCheckBox(Form)
+        self.checkBoxFilterChecked.setObjectName(u"checkBoxFilterChecked")
+
+        self.horizontalLayout.addWidget(self.checkBoxFilterChecked)
+
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -131,6 +136,7 @@ class Ui_Form(object):
         self.pushRemoveLinks.setText(QCoreApplication.translate("Form", u"Remove Links", None))
         self.pushCreateLinks.setText(QCoreApplication.translate("Form", u"Create Links", None))
         self.label.setText(QCoreApplication.translate("Form", u"Filter", None))
+        self.checkBoxFilterChecked.setText(QCoreApplication.translate("Form", u"Filter Checked", None))
         self.pushDelete.setText(QCoreApplication.translate("Form", u"Delete Assets", None))
     # retranslateUi
 

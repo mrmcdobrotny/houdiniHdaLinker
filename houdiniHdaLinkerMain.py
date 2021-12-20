@@ -2,14 +2,15 @@ try:
     from PySide2 import QtWidgets, QtCore, QtGui
 except:
     from Qt import QtWidgets, QtCore, QtGui
-import sys, os, glob
-from uiHoudiniHdaLinker import Ui_Form
-from uiHoudiniHdaLinkerDialog import Ui_Dialog
-import json
+
 try:
     import hou
 except ModuleNotFoundError:
     pass
+
+from uiHoudiniHdaLinker import Ui_Form
+from uiHoudiniHdaLinkerDialog import Ui_Dialog
+import sys, os, glob, json, time
 
 class areYouSure(QtWidgets.QDialog, Ui_Dialog):
     def __init__(self, listToDelete):
@@ -60,10 +61,12 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
         self.readComments()
         self.initTable()
         self.tableView.setColumnHidden(1, True)
+        
 
         self.model.dataChanged.connect(self.commentSelected)
 
         self.lineEditFilter.textChanged.connect(self.filterTable)
+        self.checkBoxFilterChecked.stateChanged.connect(self.filterTable)
         self.pushCheck.clicked.connect(self.checkSelected)
         self.pushUncheck.clicked.connect(self.uncheckSelected)
         self.pushCreateLinks.clicked.connect(self.createLinks)
@@ -158,6 +161,8 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
         self.hda_folders.insert(2, "blanc")
         #self.hda_labels.insert(0,"HDA")
         #self.tableView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        #start = time.time()
+        #timeExist = 0.0
         for row, file in enumerate(self.files_names):
             rowItems = []
             for column, label in enumerate(self.hda_labels):
@@ -192,16 +197,18 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
                     item = QtGui.QStandardItem("{}".format(label))
                     item.setCheckable(True)
                     item.setEditable(False)
-                    inHdaFolder = os.path.exists(os.path.join(self.hda_folders[column], file))
+                    #start = time.time()
+                    inHdaFolder = os.path.isfile(os.path.join(self.hda_folders[column], file))
+                    #end = time.time()
+                    #timeExist += (end - start)
                     if inHdaFolder:
                         item.setCheckState(QtCore.Qt.CheckState.Checked)
                     rowItems.append(item)
-            
-
             self.model.invisibleRootItem().appendRow(rowItems)
+            #end = time.time()
+            #print(end - start)
+        #print("check files - {} sec".format(timeExist))
 
-
-        
         self.model.setHorizontalHeaderLabels(self.hda_labels)
         self.proxy = QtCore.QSortFilterProxyModel(self)
         self.proxy.setSourceModel(self.model)
@@ -209,7 +216,38 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
         
         self.tableView.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
         
+    def filterChecked(self):
+        roleCheck = QtCore.Qt.CheckStateRole
+        state = QtCore.Qt.CheckState.Checked
+        nrows = self.model.rowCount()
+        start = self.model.index(0,0)
+        checkedList = self.model.match(start, roleCheck, state, nrows)
+        if self.checkBoxFilterChecked.isChecked():
+            #self.proxy.setFilterRole(QtCore.Qt.checkStateRole)
 
+            for row in range(self.model.rowCount()):
+                rowChecked = False
+                for col in range(self.model.columnCount()-3):
+                    index = self.model.index(row,col+3)
+                    #srcIndex = self.proxy.mapToSource(index)
+                    item = self.model.itemFromIndex(index)
+                    rowChecked = rowChecked or (item.checkState() == QtCore.Qt.CheckState.Checked)
+                    print(rowChecked)
+                print("row {} checked {}".format(row, rowChecked))
+                #item = self.proxy.item(row,0)
+                if not rowChecked:
+                    self.tableView.hideRow(row)
+                else:
+                    self.tableView.showRow(row)
+        else:
+            for row in range(self.proxy.rowCount()):
+                #index = self.proxy.index(row,0)
+                #item = self.model.item(row,0)
+                #if not index in checkedList:
+                #    self.listView.showRow(row)
+                #if not index in checkedList:
+                    #self.listView.hideRow(row)
+                self.tableView.showRow(row)
 
     def filterTable(self):
         text = self.lineEditFilter.text()
@@ -217,7 +255,7 @@ class hdaLinker(QtWidgets.QWidget, Ui_Form):
                                     QtCore.Qt.CaseInsensitive,
                                     QtCore.QRegExp.RegExp
                                     )
-
+        self.filterChecked()
         self.proxy.setFilterRegExp(search)   
 
     def checkSelected(self):
